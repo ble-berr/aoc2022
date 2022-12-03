@@ -1,8 +1,5 @@
-use std::fs;
-
 fn main() {
-    let input = fs::read_to_string("day1_input.txt")
-        .expect("Should have been able to read the input");
+    let input = include_str!("day1_input.txt");
 
     // Keep sorted such that max[2] <= max[1] <= max[0]
     let mut max: [u64; 3] = [0, 0, 0];
