@@ -29,11 +29,11 @@ fn process_line(line: &str) -> Option<Input<'_>> {
             } else {
                 return Some(Input::Down(target));
             }
-        },
+        }
         None => {
             let (size, _) = line.split_once(' ').unwrap();
             return Some(Input::File(size.parse::<u64>().unwrap()));
-        },
+        }
     }
 }
 
@@ -53,13 +53,13 @@ fn solve_part1(input: &str) -> u64 {
                     total += size;
                 }
                 *dir_size.last_mut().unwrap() += size;
-            },
+            }
             Input::Down(_) => {
                 dir_size.push(0);
-            },
+            }
             Input::File(size) => {
                 *dir_size.last_mut().unwrap() += size;
-            },
+            }
         }
     }
 
@@ -90,10 +90,10 @@ fn solve_part2(input: &str) -> u64 {
                     total += size;
                 }
                 listings.push(size);
-            },
+            }
             Input::Down(_) => {
                 dir_size.push(0);
-            },
+            }
             Input::File(size) => {
                 *dir_size.last_mut().unwrap() += size;
             }

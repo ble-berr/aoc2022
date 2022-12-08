@@ -18,9 +18,9 @@ enum Result {
 }
 
 const RESULT_LOOKUP: [[Result; 3]; 3] = [
-    [ Result::Draw,   Result::Win,  Result::Loss ],
-    [ Result::Loss,  Result::Draw,   Result::Win ],
-    [  Result::Win,  Result::Loss,  Result::Draw ],
+    [Result::Draw, Result::Win, Result::Loss],
+    [Result::Loss, Result::Draw, Result::Win],
+    [Result::Win, Result::Loss, Result::Draw],
 ];
 
 fn calc_move(opponent: u8, me: u8) -> i64 {
@@ -28,11 +28,12 @@ fn calc_move(opponent: u8, me: u8) -> i64 {
         Result::Draw => (me + 1) + 3,
         Result::Win => (me + 1) + 6,
         Result::Loss => (me + 1) + 0,
-    }.into()
+    }
+    .into()
 }
 
 fn solve_part1(input: &str) -> i64 {
-    let mut total: [i64; 3] = [ 0, 0, 0 ];
+    let mut total: [i64; 3] = [0, 0, 0];
 
     for line in input.lines() {
         let mut moves = line.chars();
@@ -52,23 +53,11 @@ const WINNING_MOVE: [u8; 3] = [
     1, // Rock beats Scissors (C)
 ];
 
-const LOSING_MOVE: [u8; 3] = [
-    3,
-    1,
-    2,
-];
+const LOSING_MOVE: [u8; 3] = [3, 1, 2];
 
-const DRAWING_MOVE: [u8; 3] = [
-    1,
-    2,
-    3,
-];
+const DRAWING_MOVE: [u8; 3] = [1, 2, 3];
 
-const ADVISED_MOVE: [[u8; 3]; 3] = [
-    LOSING_MOVE,
-    DRAWING_MOVE,
-    WINNING_MOVE,
-];
+const ADVISED_MOVE: [[u8; 3]; 3] = [LOSING_MOVE, DRAWING_MOVE, WINNING_MOVE];
 
 fn solve_part2(input: &str) -> i64 {
     let mut total: i64 = 0;

@@ -46,10 +46,9 @@ fn solve_part1(input: &str) -> u64 {
 
 fn pair_has_any_overlap(pair: &(Range, Range)) -> bool {
     !(pair.0.max < pair.1.min
-      || pair.1.max < pair.0.min
-      || pair.0.min > pair.1.max
-      || pair.1.min > pair.0.max
-      )
+        || pair.1.max < pair.0.min
+        || pair.0.min > pair.1.max
+        || pair.1.min > pair.0.max)
 }
 
 fn solve_part2(input: &str) -> u64 {

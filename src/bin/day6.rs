@@ -2,7 +2,7 @@
 fn test() {
     {
         let input = include_str!("day6_test1.txt");
-        let part1_results: [usize; 4] = [ 5, 6, 10, 11 ];
+        let part1_results: [usize; 4] = [5, 6, 10, 11];
 
         for (i, line) in input.lines().enumerate() {
             assert_eq!(solve_part1(line), part1_results[i]);
@@ -11,7 +11,7 @@ fn test() {
 
     {
         let input = include_str!("day6_test2.txt");
-        let part2_results: [usize; 5] = [ 19, 23, 23, 29, 26];
+        let part2_results: [usize; 5] = [19, 23, 23, 29, 26];
 
         for (i, line) in input.lines().enumerate() {
             assert_eq!(solve_part2(line), part2_results[i]);
@@ -30,7 +30,8 @@ fn solve_part1(input: &str) -> usize {
         //println!("win {}: {}", i, std::str::from_utf8(window).unwrap());
         if !window[1..].contains(&window[0])
             && !window[2..].contains(&window[1])
-            && window[3] != window[2] {
+            && window[3] != window[2]
+        {
             return i + 4;
         }
     }

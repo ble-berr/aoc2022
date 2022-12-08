@@ -24,5 +24,11 @@ fn main() {
 
         sum += n.parse::<u64>().unwrap();
     }
-    println!("max is [{}, {}, {}] summed is {}", max[0], max[1], max[2], max[0] + max[1] + max[2]);
+    println!(
+        "max is [{}, {}, {}] summed is {}",
+        max[0],
+        max[1],
+        max[2],
+        max[0] + max[1] + max[2]
+    );
 }

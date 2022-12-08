@@ -51,7 +51,7 @@ fn solve_part1(input: &str) -> String {
             .filter(|(_, elem)| elem.is_ascii_uppercase());
         // Assemble the stacks, since setup_lines is reversed the topmost element of each stack
         // ends up at the end of the Vec.
-        for (i, elem) in  elements {
+        for (i, elem) in elements {
             stacks[i].push(elem);
         }
     }
@@ -94,7 +94,7 @@ fn solve_part2(input: &str) -> String {
             .filter(|(_, elem)| elem.is_ascii_uppercase());
         // Assemble the stacks, since setup_lines is reversed the topmost element of each stack
         // ends up at the end of the Vec.
-        for (i, elem) in  elements {
+        for (i, elem) in elements {
             stacks[i].push(elem);
         }
     }

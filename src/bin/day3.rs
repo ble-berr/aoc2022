@@ -24,10 +24,13 @@ fn solve_part1(input: &str) -> u64 {
         .lines()
         .map(|line| line.split_at(line.len() / 2))
         .map(|halves| (halves.0.as_bytes(), halves.1.as_bytes()))
-        .map(|halves| halves.0
-             .iter()
-             .find(|c: &&u8| halves.1.contains(c))
-             .unwrap())
+        .map(|halves| {
+            halves
+                .0
+                .iter()
+                .find(|c: &&u8| halves.1.contains(c))
+                .unwrap()
+        })
         .map(|item| item_priority(item.clone()) as u64)
         .sum()
 }
@@ -41,9 +44,7 @@ fn find_common_item(group: [&[u8]; 3]) -> u8 {
 }
 
 fn solve_part2(input: &str) -> u64 {
-    let mut lines = input
-        .lines()
-        .map(|line| line.as_bytes());
+    let mut lines = input.lines().map(|line| line.as_bytes());
 
     let mut total: u64 = 0;
 
@@ -55,10 +56,9 @@ fn solve_part2(input: &str) -> u64 {
         let second = lines.next().unwrap();
         let third = lines.next().unwrap();
 
-        let item = find_common_item([ first.unwrap(), second, third ]);
+        let item = find_common_item([first.unwrap(), second, third]);
         total += item_priority(item) as u64;
     }
 
     return total;
 }
-
