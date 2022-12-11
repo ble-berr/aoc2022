@@ -2,13 +2,13 @@
 fn test() {
     let input = include_str!("day11_test.txt");
     assert_eq!(solve_part1(input), 10605);
-    //assert_eq!(solve_part2(input), 2713310158);
+    assert_eq!(solve_part2(input), 2713310158);
 }
 
 fn main() {
     let input = include_str!("day11_input.txt");
     println!("1: {}", solve_part1(input));
-    //println!("2: {}", solve_part2(input));
+    println!("2: {}", solve_part2(input));
 }
 
 enum OperationParam {
@@ -109,6 +109,45 @@ fn solve_part1(input: &str) -> usize {
                 };
 
                 item /= 3;
+
+                let target = match item % monkeys[monkey_index].test_div_by {
+                    0 => monkeys[monkey_index].target_if_true,
+                    _ => monkeys[monkey_index].target_if_false,
+                };
+
+                monkeys[target as usize].items.push(item);
+            }
+        }
+    }
+
+    inspected.sort();
+
+    return inspected.iter().rev().take(2).product();
+}
+
+// Needs Chinese Remainder theorem which is applicable thanks to the properties of the divisors.
+// This lets us cap the worry value to the product of all the divisors.
+// Didn't find this myself, someone gave me the name of the theorem.
+fn solve_part2(input: &str) -> usize {
+    let mut monkeys = parse_input(input);
+    let mut inspected = vec![0usize; monkeys.len()];
+    let worry_cap = monkeys.iter().map(|m| m.test_div_by).product::<u64>();
+
+    for _ in 0..10_000 {
+        for monkey_index in 0..monkeys.len() {
+            inspected[monkey_index] += monkeys[monkey_index].items.len();
+            while let Some(mut item) = monkeys[monkey_index].items.pop() {
+                let operand = match monkeys[monkey_index].operation_param {
+                    OperationParam::Old => item,
+                    OperationParam::Literal(n) => n,
+                };
+
+                item = match monkeys[monkey_index].operation_type {
+                    OperationType::Add => item + operand,
+                    OperationType::Multiply => item * operand,
+                };
+
+                item %= worry_cap;
 
                 let target = match item % monkeys[monkey_index].test_div_by {
                     0 => monkeys[monkey_index].target_if_true,
