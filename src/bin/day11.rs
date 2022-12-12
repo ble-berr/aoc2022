@@ -125,7 +125,7 @@ fn solve_part1(input: &str) -> usize {
     return inspected.iter().rev().take(2).product();
 }
 
-// Needs Chinese Remainder theorem which is applicable thanks to the properties of the divisors.
+// Needs the Chinese Remainder theorem which is applicable thanks to the properties of the divisors.
 // This lets us cap the worry value to the product of all the divisors.
 // Didn't find this myself, someone gave me the name of the theorem.
 fn solve_part2(input: &str) -> usize {
