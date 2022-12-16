@@ -4,15 +4,16 @@ use std::cmp::Ordering;
 fn test() {
     let input = include_str!("day13_test.txt");
     assert_eq!(solve_part1(input), 13);
-    //assert_eq!(solve_part2(input), 0);
+    assert_eq!(solve_part2(input), 140);
 }
 
 fn main() {
     let input = include_str!("day13_input.txt");
     println!("1: {}", solve_part1(input));
-    //println!("2: {}", solve_part1(input));
+    println!("2: {}", solve_part2(input));
 }
 
+#[derive(Clone)]
 struct List<'a> {
     buf: &'a str,
     pos: usize,
@@ -83,7 +84,7 @@ impl<'a> Iterator for List<'a> {
     }
 }
 
-fn compare_lists(a: &mut List, b: &mut List) -> Ordering {
+fn compare_lists(mut a: List, mut b: List) -> Ordering {
     loop {
         let option_a = a.next();
         let option_b = b.next();
@@ -103,16 +104,16 @@ fn compare_lists(a: &mut List, b: &mut List) -> Ordering {
                     Ordering::Greater => Ordering::Greater,
                 }
             }
-            (Some(Elem::Integer(integer_a)), Some(Elem::List(mut list_b))) => {
-                let mut list_a = List::from_buf(integer_a);
-                compare_lists(&mut list_a, &mut list_b)
+            (Some(Elem::Integer(integer_a)), Some(Elem::List(list_b))) => {
+                let list_a = List::from_buf(integer_a);
+                compare_lists(list_a, list_b)
             }
-            (Some(Elem::List(mut list_a)), Some(Elem::Integer(integer_b))) => {
-                let mut list_b = List::from_buf(integer_b);
-                compare_lists(&mut list_a, &mut list_b)
+            (Some(Elem::List(list_a)), Some(Elem::Integer(integer_b))) => {
+                let list_b = List::from_buf(integer_b);
+                compare_lists(list_a, list_b)
             }
-            (Some(Elem::List(mut list_a)), Some(Elem::List(mut list_b))) => {
-                compare_lists(&mut list_a, &mut list_b)
+            (Some(Elem::List(list_a)), Some(Elem::List(list_b))) => {
+                compare_lists(list_a, list_b)
             }
         };
 
@@ -137,11 +138,11 @@ fn solve_part1(input: &str) -> usize {
         assert_eq!(2 <= line_a.len(), true);
         assert_eq!(2 <= line_b.len(), true);
 
-        let mut list_a = List::from_buf(&line_a[1..line_a.len() - 1]);
-        let mut list_b = List::from_buf(&line_b[1..line_b.len() - 1]);
+        let list_a = List::from_buf(&line_a[1..line_a.len() - 1]);
+        let list_b = List::from_buf(&line_b[1..line_b.len() - 1]);
 
-        match compare_lists(&mut list_a, &mut list_b) {
-            Ordering::Equal => panic!("Found lists to be equal: {} | {}", list_a.buf, list_b.buf),
+        match compare_lists(list_a.clone(), list_b.clone()) {
+            Ordering::Equal => panic!("Found lists to be equal: {} | {}", &list_a.buf, &list_b.buf),
             Ordering::Less => {
                 total += index;
             }
@@ -154,4 +155,27 @@ fn solve_part1(input: &str) -> usize {
     }
 
     return total;
+}
+
+fn solve_part2(input: &str) -> usize {
+    let mut lists: Vec<List> = input
+        .lines()
+        .filter_map(|line| {
+            match line.len() {
+                0 => None,
+                1 => panic!("unexpected line: {}", line),
+                len => Some(List::from_buf(&line[1..len-1])),
+            }
+        })
+    .collect();
+
+    lists.push(List::from_buf("[2]"));
+    lists.push(List::from_buf("[6]"));
+    lists.sort_unstable_by(|a,b| compare_lists(a.clone(),b.clone()));
+
+    lists
+        .iter()
+        .enumerate()
+        .filter_map(|(index,list)| if list.buf == "[2]" || list.buf == "[6]" { Some(index + 1) } else { None })
+        .product::<usize>()
 }
