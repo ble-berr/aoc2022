@@ -112,9 +112,7 @@ fn compare_lists(mut a: List, mut b: List) -> Ordering {
                 let list_b = List::from_buf(integer_b);
                 compare_lists(list_a, list_b)
             }
-            (Some(Elem::List(list_a)), Some(Elem::List(list_b))) => {
-                compare_lists(list_a, list_b)
-            }
+            (Some(Elem::List(list_a)), Some(Elem::List(list_b))) => compare_lists(list_a, list_b),
         };
 
         match ordering {
@@ -160,22 +158,26 @@ fn solve_part1(input: &str) -> usize {
 fn solve_part2(input: &str) -> usize {
     let mut lists: Vec<List> = input
         .lines()
-        .filter_map(|line| {
-            match line.len() {
-                0 => None,
-                1 => panic!("unexpected line: {}", line),
-                len => Some(List::from_buf(&line[1..len-1])),
-            }
+        .filter_map(|line| match line.len() {
+            0 => None,
+            1 => panic!("unexpected line: {}", line),
+            len => Some(List::from_buf(&line[1..len - 1])),
         })
-    .collect();
+        .collect();
 
     lists.push(List::from_buf("[2]"));
     lists.push(List::from_buf("[6]"));
-    lists.sort_unstable_by(|a,b| compare_lists(a.clone(),b.clone()));
+    lists.sort_unstable_by(|a, b| compare_lists(a.clone(), b.clone()));
 
     lists
         .iter()
         .enumerate()
-        .filter_map(|(index,list)| if list.buf == "[2]" || list.buf == "[6]" { Some(index + 1) } else { None })
+        .filter_map(|(index, list)| {
+            if list.buf == "[2]" || list.buf == "[6]" {
+                Some(index + 1)
+            } else {
+                None
+            }
+        })
         .product::<usize>()
 }
