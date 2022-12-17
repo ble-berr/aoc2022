@@ -18,23 +18,23 @@ struct Grid2D<T> {
 }
 
 impl<T: std::clone::Clone> Grid2D<T> {
-    fn get(&self, x: usize, y:usize) -> Option<&T> {
+    fn get(&self, x: usize, y: usize) -> Option<&T> {
         if self.x <= x || self.y <= y {
             None
         } else {
-            Some(&self.buf[(y*self.x) + x])
+            Some(&self.buf[(y * self.x) + x])
         }
     }
 
-    fn get_index(&self, x: usize, y:usize) -> Option<usize> {
+    fn get_index(&self, x: usize, y: usize) -> Option<usize> {
         if self.x <= x || self.y <= y {
             None
         } else {
-            Some((y*self.x) + x)
+            Some((y * self.x) + x)
         }
     }
 
-    fn set(&mut self, x: usize, y:usize, value: &T) {
+    fn set(&mut self, x: usize, y: usize, value: &T) {
         if let Some(index) = self.get_index(x, y) {
             self.buf[index] = value.clone();
         } else {
@@ -178,7 +178,7 @@ fn drop_sand(cave: &mut Grid2D<Cell>, drop_x: usize) -> bool {
                 sand_y += 1;
                 continue;
             }
-            Some(&Cell::Rock)|Some(&Cell::Sand) => {}
+            Some(&Cell::Rock) | Some(&Cell::Sand) => {}
         }
 
         match cave.get(sand_x + 1, sand_y + 1) {
@@ -190,7 +190,7 @@ fn drop_sand(cave: &mut Grid2D<Cell>, drop_x: usize) -> bool {
                 sand_y += 1;
                 continue;
             }
-            Some(&Cell::Rock)|Some(&Cell::Sand) => {}
+            Some(&Cell::Rock) | Some(&Cell::Sand) => {}
         }
 
         cave.set(sand_x, sand_y, &Cell::Sand);
