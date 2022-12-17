@@ -2,13 +2,13 @@
 fn test() {
     let input = include_str!("day14_test.txt");
     assert_eq!(solve_part1(input), 24);
-    //assert_eq!(solve_part2(input), 0);
+    assert_eq!(solve_part2(input), 93);
 }
 
 fn main() {
     let input = include_str!("day14_input.txt");
     println!("1: {}", solve_part1(input));
-    //println!("2: {}", solve_part1(input));
+    println!("2: {}", solve_part2(input));
 }
 
 struct Grid2D<T> {
@@ -58,6 +58,12 @@ enum Cell {
     Air,
 }
 
+#[derive(PartialEq)]
+enum Flag {
+    Part1,
+    Part2,
+}
+
 fn display_cave(cave: &Grid2D<Cell>, offset: usize) {
     const POW10: [usize; 3] = [100, 10, 1];
     let mut buf = String::new();
@@ -100,7 +106,7 @@ fn display_cave(cave: &Grid2D<Cell>, offset: usize) {
     }
 }
 
-fn build_cave(input: &str) -> (Grid2D<Cell>, usize) {
+fn build_cave(input: &str, flag: Flag) -> (Grid2D<Cell>, usize) {
     let mut max_x = 0usize;
     let mut min_x = std::usize::MAX;
     let mut max_y = 0usize;
@@ -115,6 +121,12 @@ fn build_cave(input: &str) -> (Grid2D<Cell>, usize) {
             min_x = std::cmp::min(x, min_x);
             max_y = std::cmp::max(y, max_y);
         }
+    }
+
+    if flag == Flag::Part2 {
+        max_y += 2;
+        min_x = std::cmp::min(min_x, 500 - max_y);
+        max_x = std::cmp::max(max_x, 500 + max_y);
     }
 
     let mut cave = Grid2D::new((max_x - min_x) + 1, max_y + 1, Cell::Air);
@@ -141,6 +153,12 @@ fn build_cave(input: &str) -> (Grid2D<Cell>, usize) {
                     cave.set(x_a, y, &Cell::Rock);
                 }
             }
+        }
+    }
+
+    if flag == Flag::Part2 {
+        for x in 0..cave.x {
+            cave.set(x, max_y, &Cell::Rock);
         }
     }
 
@@ -199,7 +217,22 @@ fn drop_sand(cave: &mut Grid2D<Cell>, drop_x: usize) -> bool {
 }
 
 fn solve_part1(input: &str) -> usize {
-    let (mut cave, drop_x) = build_cave(input);
+    let (mut cave, drop_x) = build_cave(input, Flag::Part1);
+
+    display_cave(&cave, 500 - drop_x);
+
+    let mut total = 0usize;
+    while drop_sand(&mut cave, drop_x) {
+        total += 1;
+    }
+
+    display_cave(&cave, 500 - drop_x);
+
+    return total;
+}
+
+fn solve_part2(input: &str) -> usize {
+    let (mut cave, drop_x) = build_cave(input, Flag::Part2);
 
     display_cave(&cave, 500 - drop_x);
 
