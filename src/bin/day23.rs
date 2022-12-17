@@ -8,5 +8,5 @@ fn test() {
 fn main() {
     let input = include_str!("day23_input.txt");
     println!("1: {}", solve_part1(input));
-    //println!("2: {}", solve_part1(input));
+    //println!("2: {}", solve_part2(input));
 }
