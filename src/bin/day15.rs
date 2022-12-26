@@ -2,13 +2,13 @@
 fn test() {
     let input = include_str!("day15_test.txt");
     assert_eq!(solve_part1(input, 10), 26);
-    //assert_eq!(solve_part2(input), 0);
+    assert_eq!(solve_part2(input, 20), 56_000_011);
 }
 
 fn main() {
     let input = include_str!("day15_input.txt");
     println!("1: {}", solve_part1(input, 2_000_000));
-    //println!("2: {}", solve_part2(input));
+    println!("2: {}", solve_part2(input, 4_000_000));
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -110,4 +110,54 @@ fn solve_part1(input: &str, y: i64) -> u64 {
     }
 
     return total;
+}
+
+// NOTE: probavbly better build as an iterator
+fn circumference_points(origin: &Point, radius: i64) -> Vec<Point> {
+    let mut points: Vec<Point> = Vec::new();
+    points.reserve((radius as usize + 1) * 4);
+
+    for i in 0..=radius {
+        let x = origin.x + i;
+        let y = origin.y + (radius - i);
+        points.push(Point { x: x, y: y });
+        points.push(Point { x: x * -1, y: y });
+        points.push(Point { x: x, y: y * -1 });
+        points.push(Point {
+            x: x * -1,
+            y: y * -1,
+        });
+    }
+    return points;
+}
+
+// NOTE: naïve and unaptimized
+fn solve_part2(input: &str, max: i64) -> u64 {
+    let sensor_beacon_pairs = parse_input(input);
+
+    let mut points: Vec<Point> = Vec::new();
+
+    for (sensor, beacon) in sensor_beacon_pairs.iter() {
+        points.append(&mut circumference_points(
+            &sensor,
+            manhattan_distance(*sensor, *beacon) as i64 + 1,
+        ))
+    }
+
+    'pos: for pos in points {
+        if pos.x < 0 || max < pos.x {
+            continue 'pos;
+        }
+        if pos.y < 0 || max < pos.y {
+            continue 'pos;
+        }
+        for (sensor, beacon) in sensor_beacon_pairs.iter() {
+            if manhattan_distance(*sensor, pos) <= manhattan_distance(*sensor, *beacon) {
+                continue 'pos;
+            }
+        }
+        return (pos.x as u64 * 4_000_000) + pos.y as u64;
+    }
+
+    panic!("P2: No point found");
 }
